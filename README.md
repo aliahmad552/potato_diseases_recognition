@@ -1,55 +1,69 @@
 # 🥔 Potato Disease Classification - Deep Learning Project
 
-A deep learning web application built with **TensorFlow** and **Flask** that classifies potato leaf diseases from uploaded images. The app predicts whether the leaf is:
+A deep learning web application built with **TensorFlow**, **FastAPI**, and **LangChain** that classifies potato leaf diseases and provides an **AI-powered agricultural chatbot** for farmers and researchers.  
 
-- Early Blight 🍂  
-- Late Blight 🧫  
-- Healthy ✅
+The app predicts whether a potato leaf is:
 
+- **Early Blight** 🍂  
+- **Late Blight** 🧫  
+- **Healthy** ✅
 
 ---
 
 ## 🚀 Features
 
-- Image upload and real-time prediction  
-- Clean, responsive frontend with **CSS styling**  
-- Background image with **blur effect**  
-- Trained on custom dataset using **Convolutional Neural Networks**  
-- Outputs the disease class only (no probability/confidence)
+- 📷 **Image Upload & Real-Time Disease Prediction**  
+- 💬 **RAG-based Agricultural Chatbot** integrated using LangChain  
+- 🎨 Clean and responsive **frontend** (HTML, CSS, JS)  
+- 🌆 Background image with **blur effect**  
+- 🧠 **Convolutional Neural Network (CNN)** for disease classification  
+- ⚡ **FastAPI Backend** for prediction and chatbot APIs  
+- 🔒 `.env` file support for secret keys (e.g., Hugging Face token)
 
 ---
 
 ## 🧠 Model Overview
 
-- Input shape: `256x256x3`
-- 6 Conv2D layers with ReLU and MaxPooling  
-- Dense layers for final classification (Softmax)
-- Model saved as `potatoes.h5`
+- **Input Shape:** `256x256x3`  
+- **Architecture:**  
+  - 6 × Conv2D layers (ReLU activation)  
+  - MaxPooling for downsampling  
+  - Dense layers for classification  
+  - Softmax output layer  
+- **Model File:** `potatoes.h5`  
+- **Framework:** TensorFlow / Keras
 
 ---
 
-## 🗂️ Project Structure
+## 🤖 RAG-Based Chatbot Integration
 
-Potato-Disease-Classification/
-│
-├── app.py # Fast api backend
-├── model/potatoes.h5 # Trained model
-├── requirements.txt # Python dependencies
-│
-├── static/
-│ │ └── images/
-│ └── logo.png # Background image
-│
-├── templates/
-│ └── index.html # Main HTML page
-│
-└── README.md # Project description
+Alongside disease prediction, this project includes a **Retrieval-Augmented Generation (RAG)** chatbot that answers agricultural queries related to **potato diseases**, **treatment methods**, and **farming practices**.
 
-yaml
-Copy
-Edit
+### 🧩 Chatbot Pipeline
+
+1. **Knowledge Base Creation**  
+   - Collected domain-specific text documents about potato diseases and farming techniques.  
+   - Loaded using **`TextLoader`** from LangChain.
+
+2. **Text Processing**
+   - Split into smaller chunks using **`RecursiveCharacterTextSplitter`** for efficient retrieval.  
+
+3. **Vector Store**
+   - Created embeddings using:  
+     ```python
+     model_name = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
+     ```
+   - Stored embeddings in **FAISS (Facebook AI Similarity Search)** for high-speed retrieval.  
+
+4. **RAG Chain**
+   - Combined **retriever** + **Hugging Face language model** for contextual question answering.  
+   - Deployed via FastAPI endpoints alongside the disease classification API.
 
 ---
+## 🎥 Demo Video
+
+Watch the full project demo on YouTube:
+👉 https://youtu.be/ZknDwnZHyRk
 
 ## ⚙️ Installation & Setup
 
