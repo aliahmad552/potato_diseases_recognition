@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Potato Disease Detector 🌱</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-green-50 to-green-100 min-h-screen font-sans flex flex-col items-center">
+
+  <!-- Hero Section -->
+  <header class="w-full bg-green-700 text-white p-6 shadow-lg">
+    <div class="max-w-5xl mx-auto flex justify-between items-center">
+      <h1 class="text-2xl font-bold">🌱 Potato Disease Detector</h1>
+      <p class="italic">AI-powered plant health assistant</p>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="max-w-4xl w-full mt-10 p-6 bg-white shadow-xl rounded-2xl">
+    
+    <!-- Intro -->
+    <section class="text-center mb-8">
+      <h2 class="text-3xl font-semibold text-green-700">Detect Diseases in Seconds</h2>
+      <p class="text-gray-600 mt-2">Upload a potato leaf image and get instant diagnosis with treatment advice.</p>
+    </section>
+
+    <!-- Upload Section -->
+    <section class="mb-8">
+      <div class="border-2 border-dashed border-green-400 p-6 rounded-xl text-center hover:bg-green-50 transition">
+        <input type="file" id="fileInput" class="hidden" />
+        <label for="fileInput" class="cursor-pointer text-green-700 font-semibold">📤 Click to Upload Image</label>
+      </div>
+      <div class="mt-4 flex justify-center">
+        <button onclick="uploadImage()" class="bg-green-600 text-white px-6 py-2 rounded-lg shadow hover:bg-green-700 transition">Predict Disease</button>
+      </div>
+      <p id="result" class="mt-4 text-lg text-gray-700 text-center font-medium"></p>
+    </section>
+
+    <!-- Chat Section -->
+    <section>
+      <h3 class="text-xl font-semibold text-green-700 mb-4">Ask the AI Assistant 🤖</h3>
+      <div id="chatbox" class="border rounded-xl p-4 h-64 overflow-y-auto bg-gray-50"></div>
+      <div class="flex mt-3">
+        <input type="text" id="userInput" placeholder="Ask about disease or treatment..." 
+               class="flex-1 border rounded-l-xl px-4 py-2 focus:outline-none" />
+        <button onclick="sendMessage()" class="bg-green-600 text-white px-4 rounded-r-xl hover:bg-green-700 transition">Send</button>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="mt-10 text-gray-500 text-sm">
+    © 2025 Potato Disease Detector | Built by Ali Ahmad 🚀
+  </footer>
+
+  <script>
+    let detectedDisease = "Potato Disease"; // default value until prediction
+
+    async function uploadImage() {
+      const fileInput = document.getElementById("fileInput").files[0];
+      if (!fileInput) return alert("Please select an image.");
+
+      const formData = new FormData();
+      formData.append("file", fileInput);
+
+      const response = await fetch("http://127.0.0.1:8000/predict", {
+        method: "POST",
+        body: formData
+      });
+
+      const data = await response.json();
+      document.getElementById("result").innerText = 
+        `🌿 Prediction: ${data.class} | Confidence: ${data.confidence}`;
+      
+      detectedDisease = data.class; // store for chatbot
+    }
+
+    async function sendMessage() {
+      const userInput = document.getElementById("userInput").value;
+      if (!userInput) return;
+
+      const chatbox = document.getElementById("chatbox");
+      chatbox.innerHTML += `<div class="text-blue-600 font-semibold mb-1">You: ${userInput}</div>`;
+
+      const response = await fetch("http://127.0.0.1:8000/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ question: userInput, disease: detectedDisease })
+      });
+
+      const data = await response.json();
+      chatbox.innerHTML += `<div class="text-green-700 mb-2">Bot: ${data.answer}</div>`;
+
+      document.getElementById("userInput").value = "";
+      chatbox.scrollTop = chatbox.scrollHeight;
+    }
+  </script>
+</body>
+</html>
